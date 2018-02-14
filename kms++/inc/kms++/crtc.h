@@ -31,6 +31,7 @@ public:
 	Plane* get_primary_plane();
 
 	int page_flip(Framebuffer& fb, void *data);
+	int wait_vblank(int type, unsigned int sequence, void *data);
 
 	uint32_t buffer_id() const;
 	uint32_t x() const;

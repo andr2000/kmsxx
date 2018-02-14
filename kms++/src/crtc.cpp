@@ -140,6 +140,17 @@ int Crtc::page_flip(Framebuffer& fb, void *data)
 	return drmModePageFlip(card().fd(), id(), fb.id(), DRM_MODE_PAGE_FLIP_EVENT, data);
 }
 
+int Crtc::wait_vblank(int type, unsigned int sequence, void *data)
+{
+	drmVBlank vblank = {};
+
+	vblank.request.type = (drmVBlankSeqType)type;
+	vblank.request.sequence = sequence;
+	vblank.request.signal = (unsigned long)data;
+
+	return drmWaitVBlank(card().fd(), &vblank);
+}
+
 uint32_t Crtc::buffer_id() const
 {
 	return m_priv->drm_crtc->buffer_id;

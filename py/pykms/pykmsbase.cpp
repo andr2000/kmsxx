@@ -2,6 +2,8 @@
 #include <pybind11/stl.h>
 #include <kms++/kms++.h>
 
+#include <xf86drm.h>
+
 namespace py = pybind11;
 
 using namespace kms;
@@ -86,6 +88,11 @@ void init_pykmsbase(py::module &m)
 				{
 					self->page_flip(fb, (void*)(intptr_t)data);
 				}, py::arg("fb"), py::arg("data") = 0)
+			.def("wait_vblank",
+			     [](Crtc* self, int type, unsigned int sequence, uint32_t data)
+				{
+					return self->wait_vblank(type, sequence, (void*)(intptr_t)data);
+				}, py::arg("type"), py::arg("sequence"), py::arg("data") = 0)
 			.def("set_plane", &Crtc::set_plane)
 			.def_property_readonly("possible_planes", &Crtc::get_possible_planes)
 			.def_property_readonly("primary_plane", &Crtc::get_primary_plane)
@@ -94,6 +101,15 @@ void init_pykmsbase(py::module &m)
 			.def("__repr__", [](const Crtc& o) { return "<pykms.Crtc " + to_string(o.id()) + ">"; })
 			.def("refresh", &Crtc::refresh)
 			;
+	m.attr("DRM_VBLANK_ABSOLUTE") = py::int_(static_cast<int>(DRM_VBLANK_ABSOLUTE));
+	m.attr("DRM_VBLANK_RELATIVE") = py::int_(static_cast<int>(DRM_VBLANK_RELATIVE));
+	m.attr("DRM_VBLANK_HIGH_CRTC_MASK") = py::int_(static_cast<int>(DRM_VBLANK_HIGH_CRTC_MASK));
+	m.attr("DRM_VBLANK_EVENT") = py::int_(static_cast<int>(DRM_VBLANK_EVENT));
+	m.attr("DRM_VBLANK_FLIP") = py::int_(static_cast<int>(DRM_VBLANK_FLIP));
+	m.attr("DRM_VBLANK_NEXTONMISS") = py::int_(static_cast<int>(DRM_VBLANK_NEXTONMISS));
+	m.attr("DRM_VBLANK_SECONDARY") = py::int_(static_cast<int>(DRM_VBLANK_SECONDARY));
+	m.attr("DRM_VBLANK_SIGNAL") = py::int_(static_cast<int>(DRM_VBLANK_SIGNAL));
+	m.attr("DRM_VBLANK_HIGH_CRTC_SHIFT") = py::int_(static_cast<int>(DRM_VBLANK_HIGH_CRTC_SHIFT));
 
 	py::class_<Encoder, DrmPropObject, unique_ptr<Encoder, py::nodelete>>(m, "Encoder")
 			.def("refresh", &Encoder::refresh)
