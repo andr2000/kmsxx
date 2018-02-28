@@ -1,3 +1,4 @@
+from drm_android import DrmAndroid
 from drm_atomic import DrmAtomic
 from drm_atomic_fence import DrmAtomicFence
 from drm_atomic_sync import DrmAtomicSync
@@ -17,6 +18,8 @@ class TestFactory:
             self.handler = DrmAtomicTestOnly(self.cfg)
         elif self.cfg.atomic_sync:
             self.handler = DrmAtomicSync(self.cfg)
+        elif self.cfg.android_hwc:
+            self.handler = DrmAndroid(self.cfg)
         else:
             self.handler = DrmAtomic(self.cfg)
         return self.handler

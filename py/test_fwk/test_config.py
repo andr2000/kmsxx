@@ -23,6 +23,9 @@ class TestConfig():
         group_ioctl.add_argument('--atomic-fence', action='store_true',
                                  dest='atomic_fence', required=False,
                                  help='Use fences to synchronize page flips')
+        group_ioctl.add_argument('--android-hwc', action='store_true',
+                                 dest='android_hwc', required = False,
+                                 help = 'Emulate Android 8.x HWC/SurfaceFlinger')
 
         group_alloc = parser.add_mutually_exclusive_group()
         group_alloc.add_argument('--self-import', action='store_true',

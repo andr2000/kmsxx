@@ -1,6 +1,5 @@
 from drm_base import DrmBase
 import pykms
-import sys
 
 class DrmAtomic(DrmBase):
     def __init__(self, cfg):
@@ -16,7 +15,8 @@ class DrmAtomic(DrmBase):
         req.add(self.drm.conn, "CRTC_ID", self.drm.crtc.id)
         req.add(self.drm.crtc, {"ACTIVE": 1,
                         "MODE_ID": self.drm.modeb.id})
-        req.add(self.drm.plane, {"FB_ID": self.get_next_fb().id,
+        fb = self.get_next_fb()
+        req.add(self.drm.plane, {"FB_ID": fb.id,
                         "CRTC_ID": self.drm.crtc.id,
                         "SRC_X": 0 << 16,
                         "SRC_Y": 0 << 16,
@@ -26,6 +26,7 @@ class DrmAtomic(DrmBase):
                         "CRTC_Y": 0,
                         "CRTC_W": self.drm.mode.hdisplay,
                         "CRTC_H": self.drm.mode.vdisplay})
+        print('set_mode FB_ID %d' % fb.id)
         self.req_commit(req)
 
     def flip(self, fb):
